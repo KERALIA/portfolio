@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import Navigation from '@/components/navigation';
 import MotionProvider from '@/components/motion-provider';
-import { CursorAura } from '@/components/dynamic-cursor-aura';
 import JsonLd from '@/src/components/json-ld';
 import './globals.css';
 
@@ -76,6 +75,10 @@ export const metadata: Metadata = {
     'msapplication-TileColor': '#ffffff',
     'msapplication-TileImage': '/ms-icon-144x144.png',
   },
+  // ADDED THIS FROM GOOGLE SEARCH CONSOLE
+  verification: {
+    google: 'PtWFNq3FXfYiMrSMyvjiZaUd3za3gmz6U93odNorQJ0'
+  },
 };
 
 export default function RootLayout({
@@ -95,8 +98,6 @@ export default function RootLayout({
         <MotionProvider>
           <div className="relative z-[1]">{children}</div>
         </MotionProvider>
-        {/* Custom cursor — pointer-events:none, sits above all content */}
-        <CursorAura />
         {process.env.NODE_ENV === 'production' && <Analytics />}
         <JsonLd />
       </body>

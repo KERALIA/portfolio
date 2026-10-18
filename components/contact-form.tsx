@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle2, Send } from 'lucide-react';
+import { SmoothInput, SmoothTextarea } from '@/components/ui/smooth-caret-input';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MAX_MSG = 2000;
@@ -67,7 +68,7 @@ export default function ContactForm() {
         >
           Name
         </label>
-        <input
+        <SmoothInput
           id="cf-name"
           name="name"
           type="text"
@@ -80,6 +81,7 @@ export default function ContactForm() {
           maxLength={100}
           autoComplete="name"
           className="contact-input contact-input--underline"
+          wrapperClassName="w-full"
         />
       </div>
 
@@ -90,7 +92,7 @@ export default function ContactForm() {
         >
           Email
         </label>
-        <input
+        <SmoothInput
           id="cf-email"
           name="email"
           type="email"
@@ -102,6 +104,7 @@ export default function ContactForm() {
           disabled={loading}
           autoComplete="email"
           className="contact-input contact-input--underline"
+          wrapperClassName="w-full"
         />
       </div>
 
@@ -119,7 +122,7 @@ export default function ContactForm() {
             <span className="tabular-nums">{MAX_MSG}</span>
           </span>
         </div>
-        <textarea
+        <SmoothTextarea
           id="cf-message"
           name="message"
           placeholder="Scope, timeline, stack — tell me what you are building…"
@@ -131,6 +134,7 @@ export default function ContactForm() {
           maxLength={MAX_MSG}
           rows={5}
           className="contact-textarea"
+          wrapperClassName="w-full"
         />
         <div
           className="h-0.5 rounded-full overflow-hidden mt-2"

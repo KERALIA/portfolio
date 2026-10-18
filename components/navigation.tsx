@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { AnimatedBackground } from '@/components/ui/animated-background';
+import { ModernThemeToggle } from '@/components/ui/animated-theme-toggle';
 
 const SECTIONS = [
   { id: 'about', label: 'About' },
-  { id: 'skills', label: 'Stack' },
+  { id: 'systems', label: 'Systems' },
+  { id: 'stack', label: 'Stack' },
   { id: 'projects', label: 'Work' },
   { id: 'contact', label: 'Contact' },
 ] as const;
@@ -65,7 +68,6 @@ export default function Navigation() {
   }, []);
 
   const updateFavicons = (t: Theme) => {
-    // Select all icon-related link elements
     const selectors = 'link[rel="icon"], link[rel="apple-touch-icon"], link[rel="apple-touch-icon-precomposed"]';
     const links = document.querySelectorAll<HTMLLinkElement>(selectors);
     links.forEach((link) => {
@@ -81,19 +83,16 @@ export default function Navigation() {
         }
       }
     });
-    // Also update the msapplication-TileImage meta tag
     const msMeta = document.querySelector<HTMLMetaElement>('meta[name="msapplication-TileImage"]');
     if (msMeta) {
       msMeta.content = t === 'dark' ? '/dark/ms-icon-144x144.png' : '/ms-icon-144x144.png';
     }
-    // Update theme-color meta tag
     const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     if (themeColorMeta) {
       themeColorMeta.content = t === 'dark' ? '#0a0a0a' : '#ffffff';
     }
   };
 
-  // Theme: read localStorage; if absent, follow system preference.
   useEffect(() => {
     const apply = (t: Theme) => {
       const html = document.documentElement;
@@ -124,7 +123,6 @@ export default function Navigation() {
     };
     mq.addEventListener('change', onSystemChange);
     return () => mq.removeEventListener('change', onSystemChange);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -154,66 +152,69 @@ export default function Navigation() {
     <>
       <nav className={`site-nav ${scrolled ? 'site-nav--scrolled' : ''}`}>
         <div className="site-nav__inner">
-          <a href="#top" className="site-nav__brand" onClick={handleLinkClick}>
-            Aum Patel
+          <a href="#top" className="site-nav__brand font-eras text-lg font-bold tracking-tight" onClick={handleLinkClick}>
+            Aum Patel<span className="text-[var(--accent)]">.</span>
           </a>
 
-          <div className="site-nav__links" role="navigation" aria-label="Primary">
-            {SECTIONS.map(({ id, label }) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                className={`site-nav__link ${activeSection === id ? 'is-active' : ''}`}
-              >
-                {label}
-              </a>
-            ))}
+          {/* Desktop Navigation with Motion Primitives AnimatedBackground */}
+          <div className="hidden md:flex items-center p-1 rounded-xl border border-[var(--border)] bg-[var(--surface)]/70 backdrop-blur-md" role="navigation" aria-label="Primary">
+            <AnimatedBackground
+              defaultValue={activeSection}
+              className="rounded-lg bg-[var(--surface-hover)] border border-[var(--border-hover)]"
+              transition={{
+                type: 'spring',
+                bounce: 0.15,
+                duration: 0.3,
+              }}
+              enableHover
+            >
+              {SECTIONS.map(({ id, label }) => (
+                <a
+                  key={id}
+                  data-id={id}
+                  href={`#${id}`}
+                  className={`px-3.5 py-1.5 text-xs font-medium transition-colors ${
+                    activeSection === id ? 'text-[var(--text-primary)] font-semibold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                  }`}
+                >
+                  {label}
+                </a>
+              ))}
+            </AnimatedBackground>
           </div>
 
-          <a href="#contact" className="site-nav__cta site-nav__cta-btn">
-            Let&apos;s Talk
-          </a>
+          <div className="flex items-center gap-2">
+            <a href="#contact" className="hidden sm:inline-flex site-nav__cta site-nav__cta-btn">
+              Let&apos;s Talk
+            </a>
 
-          <button
-            type="button"
-            className="theme-toggle"
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            onClick={toggleTheme}
-          >
-            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-          </button>
+            <ModernThemeToggle />
 
-          <button
-            type="button"
-            className="site-nav__toggle"
-            aria-label="Open menu"
-            aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen(true)}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
+            <button
+              type="button"
+              className="md:hidden site-nav__toggle"
+              aria-label="Open menu"
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen(true)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+          </div>
         </div>
       </nav>
 
       {mobileOpen && (
         <div className="site-nav__panel" role="dialog" aria-modal="true">
           <div className="site-nav__panel-header">
-            <a href="#top" className="site-nav__brand" onClick={handleLinkClick}>
-              Aum Patel
+            <a href="#top" className="site-nav__brand font-eras text-lg font-bold tracking-tight" onClick={handleLinkClick}>
+              Aum Patel<span className="text-[var(--accent)]">.</span>
             </a>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="theme-toggle"
-                aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-                onClick={toggleTheme}
-              >
-                {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
-              </button>
+              <ModernThemeToggle />
               <button
                 type="button"
                 className="site-nav__toggle"
@@ -239,8 +240,8 @@ export default function Navigation() {
                 {label}
               </a>
             ))}
-            <a href="#contact" className="site-nav__panel-link" onClick={handleLinkClick}>
-              Let&apos;s Talk
+            <a href="#contact" className="site-nav__panel-link font-semibold text-[var(--accent)]" onClick={handleLinkClick}>
+              Let&apos;s Talk →
             </a>
           </div>
         </div>

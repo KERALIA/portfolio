@@ -24,9 +24,13 @@ node_modules
 .vscode/
 .idea/
 
-# Claude
+# Claude & Agents
 .claude/
 CLAUDE.md
+.agents/
+
+# Reference repos
+pdfcraft-main/
 
 # OS
 Thumbs.db

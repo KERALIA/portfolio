@@ -1,6 +1,32 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+@font-face {
+  font-family: 'Eras Demi ITC';
+  src: local('Eras Demi ITC'), local('Eras Bold ITC'), url('/fonts/eras-demi.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Eras Demi';
+  src: local('Eras Demi ITC'), local('Eras Bold ITC'), url('/fonts/eras-demi.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Eras Bold ITC';
+  src: local('Eras Bold ITC'), local('Eras Demi ITC'), url('/fonts/eras-bold.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -36,6 +62,14 @@
   --input:           var(--surface);
   --ring:            var(--accent);
   --radius:          12px;
+  --success:              var(--color-emerald-500);
+  --success-foreground:              var(--color-emerald-900);
+  --info:              var(--color-violet-500);
+  --info-foreground:              var(--color-violet-900);
+  --warning:              var(--color-yellow-500);
+  --warning-foreground:              var(--color-yellow-900);
+  --invert:              var(--color-zinc-900);
+  --invert-foreground:              var(--color-zinc-50);
 }
 
 :root.light {
@@ -69,6 +103,7 @@
 @theme inline {
   --font-sans: 'Geist', 'Geist Fallback', system-ui, sans-serif;
   --font-mono: 'Geist Mono', 'Geist Mono Fallback', monospace;
+  --font-eras: 'Eras Demi ITC', 'Eras Demi', 'Eras Bold ITC', system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -92,6 +127,73 @@
   --radius-md: 12px;
   --radius-lg: 12px;
   --radius-xl: 12px;
+  --animate-marquee:              marquee var(--duration) infinite linear;
+  --animate-marquee-vertical:              marquee-vertical var(--duration) linear infinite;
+  --animate-shimmer-slide:              shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-spin-around:              spin-around calc(var(--speed) * 2) infinite linear;
+  --animate-shiny-text:              shiny-text 8s infinite;
+  --color-invert-foreground:              var(--invert-foreground);
+  --color-invert:              var(--invert);
+  --color-warning-foreground:              var(--warning-foreground);
+  --color-warning:              var(--warning);
+  --color-info-foreground:              var(--info-foreground);
+  --color-info:              var(--info);
+  --color-success-foreground:              var(--success-foreground);
+  --color-success:              var(--success);
+  @keyframes marquee {
+  from {
+    transform:              translateX(0);
+    }
+  to {
+    transform:              translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform:              translateY(0);
+    }
+  to {
+    transform:              translateY(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes shimmer-slide {
+  to {
+    transform:              translate(calc(100cqw - 100%), 0);
+    }
+  }
+  @keyframes spin-around {
+  0% {
+    transform:              translateZ(0) rotate(0);
+    }
+  15%, 35% {
+    transform:              translateZ(0) rotate(90deg);
+    }
+  65%, 85% {
+    transform:              translateZ(0) rotate(270deg);
+    }
+  100% {
+    transform:              translateZ(0) rotate(360deg);
+    }
+  }
+  @keyframes shiny-text {
+  0%, 90%, 100% {
+    background-position:              calc(-100% - var(--shiny-width)) 0;
+    }
+  30%, 60% {
+    background-position:              calc(100% + var(--shiny-width)) 0;
+    }
+  }
+  --animate-spotlight: spotlight 2s ease 0.75s 1 forwards;
+  @keyframes spotlight {
+    0% {
+      opacity: 0;
+      transform: translate(-72%, -62%) scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -40%) scale(1);
+    }
+  }
 }
 
 @layer base {
@@ -106,9 +208,18 @@
   body {
     @apply text-foreground antialiased;
     background: var(--bg);
-    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-subtle), transparent);
-    background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-subtle), transparent);
+    pointer-events: none;
+    z-index: 0;
+    transform: translate3d(0, 0, 0);
+    /* end fixed background */
   }
 
   ::selection {
@@ -297,12 +408,13 @@
     gap: 1.5rem;
   }
 
-  .site-nav__brand {
-    font-size: 0.9rem;
+  .site-nav__brand, .font-eras {
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-primary);
     text-decoration: none;
     letter-spacing: -0.01em;
+    font-family: 'Eras Demi ITC', 'Eras Bold ITC', 'Eras Medium ITC', system-ui, -apple-system, sans-serif !important;
   }
 
   .site-nav__links {
@@ -840,46 +952,20 @@
   .contact-info-link:hover { color: var(--text-primary); }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   CUSTOM CURSOR — dot only, no ring, no mix-blend
-   ═══════════════════════════════════════════════════════════════════════ */
-
-.custom-cursor-active,
-.custom-cursor-active * {
-  cursor: none !important;
-}
-
-.cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--text-primary);
-  pointer-events: none;
-  z-index: 9999;
-  will-change: transform, width, height, background, border;
-  transition:
-    width 0.2s cubic-bezier(0.33, 1, 0.68, 1),
-    height 0.2s cubic-bezier(0.33, 1, 0.68, 1),
-    background-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
-    border-color 0.2s cubic-bezier(0.33, 1, 0.68, 1),
-    opacity 0.2s ease;
-}
-
-.cursor-dot[data-visible="false"] { opacity: 0; }
-.cursor-dot[data-visible="true"]  { opacity: 1; }
-
-.cursor-dot--hover {
-  width: 48px;
-  height: 48px;
-  background: transparent;
-  border: 1px solid var(--border-hover);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .scroll-indicator { animation: none; }
   .cursor-blink { animation: none; }
+}
+
+.dark {
+  --destructive-foreground:              var(--color-red-600);
+  --success:              var(--color-emerald-500);
+  --success-foreground:              var(--color-emerald-600);
+  --info:              var(--color-violet-500);
+  --info-foreground:              var(--color-violet-600);
+  --warning:              var(--color-yellow-500);
+  --warning-foreground:              var(--color-yellow-600);
+  --invert:              var(--color-zinc-700);
+  --invert-foreground:              var(--color-zinc-50);
 }
